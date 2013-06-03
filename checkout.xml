@@ -21,7 +21,7 @@
  *
  * @category    design
  * @package     base_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -96,7 +96,7 @@ Default layout, loads most of the pages
             <label>Additional Product Info</label>
         </block>
     </checkout_cart_index>
-
+    
     <checkout_cart_configure translate="label">
         <label>Configure Cart Item</label>
         <update handle="catalog_product_view"/>
@@ -104,7 +104,7 @@ Default layout, loads most of the pages
             <block type="checkout/cart_item_configure" name="checkout.cart.item.configure.block"></block>
         </reference>
     </checkout_cart_configure>
-
+    
 <!--
 Multi address shipping checkout main layout,
 will be rendered on all checkout pages
@@ -299,21 +299,32 @@ One page checkout main layout
 
     <checkout_onepage_index translate="label">
         <label>One Page Checkout</label>
-        <!-- Mage_Checkout -->
-        <remove name="left"/>
+        <!-- Mage_Checkout 
+        <remove name="left"/>-->
 
         <reference name="root">
-            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
-        </reference>
-        <reference name="right">
-            <action method="unsetChildren"></action>
-            <block type="page/html_wrapper" name="checkout.progress.wrapper" translate="label">
-                <label>Checkout Progress Wrapper</label>
-                <action method="setElementId"><value>checkout-progress-wrapper</value></action>
-                <block type="checkout/onepage_progress" name="checkout.progress" before="-" template="checkout/onepage/progress.phtml"/>
-            </block>
+            <action method="setTemplate"><template>page/3columns.phtml</template></action>
         </reference>
         <reference name="content">
+            <action method="unsetChildren"></action>
+      <block type="checkout/onepage_shipping_method" name="checkout.onepage.shipping_method" as="shipping_method" template="checkout/onepage/shipping_method.phtml">
+                    <block type="checkout/onepage_shipping_method_available" name="checkout.onepage.shipping_method.available" as="available" template="checkqoc/checkout/onepage/shipping_method/available.phtml"/>
+                    <block type="checkout/onepage_shipping_method_additional" name="checkout.onepage.shipping_method.additional" as="additional" template="checkout/onepage/shipping_method/additional.phtml"/>
+                </block>
+
+         <block type="checkout/onepage_payment" name="checkout.onepage.payment" as="payment" template="checkout/onepage/payment.phtml">
+                    <block type="checkout/onepage_payment_methods" name="checkout.payment.methods" as="methods" template="checkout/onepage/payment/methods.phtml">
+                        <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
+                    </block>
+                </block>
+				   </reference>
+				<reference name="right">
+				 <action method="unsetChildren"></action>
+ <block type="checkout/onepage_review" name="checkout.onepage.review" as="review" template="checkqoc/checkout/onepage/review.phtml"/>
+
+        </reference>
+        <reference name="left">
+ <action method="unsetChildren"></action>
             <block type="checkout/onepage" name="checkout.onepage" template="checkout/onepage.phtml">
                 <block type="checkout/onepage_login" name="checkout.onepage.login" as="login" template="checkout/onepage/login.phtml">
                     <block type="page/html_wrapper" name="checkout.onepage.login.before" as="login_before" translate="label">
@@ -323,20 +334,21 @@ One page checkout main layout
                 </block>
                 <block type="checkout/onepage_billing" name="checkout.onepage.billing" as="billing" template="checkout/onepage/billing.phtml"/>
                 <block type="checkout/onepage_shipping" name="checkout.onepage.shipping" as="shipping" template="checkout/onepage/shipping.phtml"/>
-                <block type="checkout/onepage_shipping_method" name="checkout.onepage.shipping_method" as="shipping_method" template="checkout/onepage/shipping_method.phtml">
-                    <block type="checkout/onepage_shipping_method_available" name="checkout.onepage.shipping_method.available" as="available" template="checkout/onepage/shipping_method/available.phtml"/>
-                    <block type="checkout/onepage_shipping_method_additional" name="checkout.onepage.shipping_method.additional" as="additional" template="checkout/onepage/shipping_method/additional.phtml"/>
-                </block>
-                <block type="checkout/onepage_payment" name="checkout.onepage.payment" as="payment" template="checkout/onepage/payment.phtml">
-                    <block type="checkout/onepage_payment_methods" name="checkout.payment.methods" as="methods" template="checkout/onepage/payment/methods.phtml">
-                        <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
-                    </block>
-                </block>
-                <block type="checkout/onepage_review" name="checkout.onepage.review" as="review" template="checkout/onepage/review.phtml"/>
+              
+                
+               
             </block>
         </reference>
     </checkout_onepage_index>
+<checkout_onepage_review>
+<remove name="right"/>
+<remove name="left"/>
+ <block type="checkout/onepage_review" name="root" output="toHtml" template="checkout/onepage/review.phtml"/>
+</checkout_onepage_review>
 
+<checkout_onepage_billing>
+<block type="checkout/onepage_billing" name="root" output="toHtml" template="checkout/onepage/billing.phtml"/>
+</checkout_onepage_billing>
 <!--
 One page checkout progress block
 -->
@@ -375,7 +387,7 @@ One page checkout shipping methods block
         <remove name="right"/>
         <remove name="left"/>
 
-        <block type="checkout/onepage_shipping_method_available" name="root" output="toHtml" template="checkout/onepage/shipping_method/available.phtml"/>
+        <block type="checkout/onepage_shipping_method_available" name="root" output="toHtml" template="checkqoc/checkout/onepage/shipping_method/available.phtml"/>
     </checkout_onepage_shippingmethod>
 
     <checkout_onepage_additional>
